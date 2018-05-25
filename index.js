@@ -3,12 +3,23 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const petRouter = require('./routes/petRouter');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
-const { dbConnect } = require('./db-mongoose');
+// const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
 
 const app = express();
+
+app.get('/api/cat', (req, res) => {
+  //show the cat that is next in line to be adopted
+  return res.json(//return a cat
+  );});
+
+app.get('/api/dog', (req, res) => {
+  //Show the dog that is next in line to be adopted
+  return res.json(//return a dog
+  );});
 
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
@@ -22,6 +33,8 @@ app.use(
   })
 );
 
+app.use('/api', petRouter);
+
 function runServer(port = PORT) {
   const server = app
     .listen(port, () => {
@@ -34,7 +47,7 @@ function runServer(port = PORT) {
 }
 
 if (require.main === module) {
-  dbConnect();
+  // dbConnect(); //not using a db
   runServer();
 }
 
