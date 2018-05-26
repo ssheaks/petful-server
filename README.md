@@ -18,7 +18,7 @@ The petful app shows users two pets at a time: a cat and a dog! You can adopt on
 - Node
 - Express
 
-###Deploy
+### Deploy
 - Netlify(frontend)
 - Heroku(backend)
 
