@@ -98,19 +98,19 @@ app.get('/api/cat', (req, res) => {
 
 app.get('/api/dog', (req, res) => {
   //Show the dog that is next in line to be adopted
-  return res.json(dogs[0]);
+  return res.json(dogQueue.peek());
 });
 
 app.delete('/api/cat', (req, res) => {
-  cats.splice(0,1);
-  res.json(cats[0]);
+  // cats.splice(0,1);
+  res.json(catQueue.dequeue());
   console.log('cat adopted!');
   res.status(204);
 });
 
 app.delete('/api/dog', (req, res) => {
-  dogs.splice(0,1);
-  res.json(dogs[0]);
+  res.json(dogQueue.dequeue());
+  // res.json(dogs[0]);
   console.log('dog adopted!');
   res.status(204);
 });
