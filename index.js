@@ -3,7 +3,8 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const petRouter = require('./routes/petRouter');
+const petRouter = require('./routes/petRouter'); //routing coming soon!!
+const { catQueue, dogQueue, Queue } = require('./queue');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
 // const { dbConnect } = require('./db-mongoose');
@@ -11,67 +12,88 @@ const { PORT, CLIENT_ORIGIN } = require('./config');
 
 const app = express();
 
-const cats = [{
-  imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
-  imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
-  name: 'Fluffy',
-  sex: 'Female',
-  age: 2,
-  breed: 'Bengal',
-  story: 'Thrown on the street'
-},
-{
-  imageURL:'https://pet-uploads.adoptapet.com/1/4/b/59371175.jpg', 
-  imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
-  name: 'Leopold',
-  sex: 'Male',
-  age: 8,
-  breed: 'Maine Coon',
-  story: 'Owner could no longer care for him'
-},
-{
-  imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
-  imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
-  name: 'Bob',
-  sex: 'Female',
-  age: 2,
-  breed: 'Bengal',
-  story: 'Thrown on the street'
-},
-];
+// const cats = [{
+//   type: 'cat',
+//   imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
+//   imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+//   name: 'Fluffy',
+//   sex: 'Female',
+//   age: 2,
+//   breed: 'Bengal',
+//   story: 'Thrown on the street'
+// },
+// {
+//   type: 'cat',
+//   imageURL:'https://pet-uploads.adoptapet.com/1/4/b/59371175.jpg', 
+//   imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+//   name: 'Leopold',
+//   sex: 'Male',
+//   age: 8,
+//   breed: 'Maine Coon',
+//   story: 'Owner could no longer care for him'
+// },
+// {
+//   type: 'cat',
+//   imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
+//   imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+//   name: 'Bob',
+//   sex: 'Female',
+//   age: 2,
+//   breed: 'Bengal',
+//   story: 'Thrown on the street'
+// },
+// ];
 
-const dogs = [{
-  imageURL: 'http://www.dogster.com/wp-content/uploads/2015/05/Cute%20dog%20listening%20to%20music%201_1.jpg',
-  imageDescription: 'A smiling golden-brown golden retreiver listening to music.',
-  name: 'Zeus',
-  sex: 'Male',
-  age: 3,
-  breed: 'Golden Retriever',
-  story: 'Owner Passed away'
-},
-{
-  imageURL: 'http://www.dogbreedslist.info/uploads/allimg/dog-pictures/German-Shepherd-Dog-2.jpg',
-  imageDescription: 'An energetic pup looking for love and cuddles.',
-  name: 'Gazelle',
-  sex: 'Female',
-  age: 2,
-  breed: 'German Shepherd',
-  story: 'Needed more space and attention'
-},
-{
-  imageURL: 'http://www.dogbreedslist.info/uploads/allimg/dog-pictures/Siberian-Husky-2.jpg',
-  imageDescription: 'A loving girl looking fo her forever home.',
-  name: 'Maggie',
-  sex: 'Female',
-  age: 7,
-  breed: 'Siberian husky',
-  story: 'Found abandoned'
-}
-];
+// const dogs = [{
+//   type: 'dog',
+//   imageURL: 'http://www.dogster.com/wp-content/uploads/2015/05/Cute%20dog%20listening%20to%20music%201_1.jpg',
+//   imageDescription: 'A smiling golden-brown golden retreiver listening to music.',
+//   name: 'Zeus',
+//   sex: 'Male',
+//   age: 3,
+//   breed: 'Golden Retriever',
+//   story: 'Owner Passed away'
+// },
+// {
+//   type: 'dog',
+//   imageURL: 'http://www.dogbreedslist.info/uploads/allimg/dog-pictures/German-Shepherd-Dog-2.jpg',
+//   imageDescription: 'An energetic pup looking for love and cuddles.',
+//   name: 'Gazelle',
+//   sex: 'Female',
+//   age: 2,
+//   breed: 'German Shepherd',
+//   story: 'Needed more space and attention'
+// },
+// {
+//   type: 'dog',
+//   imageURL: 'http://www.dogbreedslist.info/uploads/allimg/dog-pictures/Siberian-Husky-2.jpg',
+//   imageDescription: 'A loving girl looking fo her forever home.',
+//   name: 'Maggie',
+//   sex: 'Female',
+//   age: 7,
+//   breed: 'Siberian husky',
+//   story: 'Found abandoned'
+// }
+// ];
 
+
+
+app.use(
+  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
+    skip: (req, res) => process.env.NODE_ENV === 'test'
+  })
+);
+
+app.use(
+  cors({
+    origin: CLIENT_ORIGIN
+  })
+);
+
+// app.use('/api', petRouter);
 app.get('/api/cat', (req, res) => {
   //show the cat that is next in line to be adopted
-  return res.json(cats[0]);
+  return res.json(catQueue.peek());
 });
 
 app.get('/api/dog', (req, res) => {
@@ -92,20 +114,6 @@ app.delete('/api/dog', (req, res) => {
   console.log('dog adopted!');
   res.status(204);
 });
-
-app.use(
-  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: (req, res) => process.env.NODE_ENV === 'test'
-  })
-);
-
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
-
-// app.use('/api', petRouter);
 
 function runServer(port = PORT) {
   const server = app

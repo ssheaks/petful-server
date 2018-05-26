@@ -1,0 +1,33 @@
+// update this file later
+
+[{
+  "type": "cat",
+  "imageURL":"https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg", 
+  "imageDescription": "Orange bengal cat with black stripes lounging on concrete.",
+  name: 'Fluffy',
+  sex: 'Female',
+  age: 2,
+  breed: 'Bengal',
+  story: 'Thrown on the street'
+},
+{
+  type: 'cat',
+  imageURL:'https://pet-uploads.adoptapet.com/1/4/b/59371175.jpg', 
+  imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+  name: 'Leopold',
+  sex: 'Male',
+  age: 8,
+  breed: 'Maine Coon',
+  story: 'Owner could no longer care for him'
+},
+{
+  type: 'cat',
+  imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
+  imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+  name: 'Bob',
+  sex: 'Female',
+  age: 2,
+  breed: 'Bengal',
+  story: 'Thrown on the street'
+}
+]
